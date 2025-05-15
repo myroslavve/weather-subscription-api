@@ -14,3 +14,10 @@ export type WeatherApiResponse = {
     };
   };
 };
+
+export type WeatherApiError = {
+  error: {
+    code: number;
+    message: string;
+  };
+};
