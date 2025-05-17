@@ -1,0 +1,25 @@
+import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
+import { Document } from 'mongoose';
+import { SubscriptionFrequency } from 'src/types';
+
+export type SubscriptionDocument = Subscription & Document;
+
+@Schema({ timestamps: true })
+export class Subscription {
+  @Prop({ required: true, lowercase: true })
+  email: string;
+
+  @Prop({ required: true })
+  city: string;
+
+  @Prop({ required: true, enum: SubscriptionFrequency })
+  frequency: SubscriptionFrequency;
+
+  @Prop({ default: false })
+  confirmed: boolean;
+
+  @Prop()
+  token: string;
+}
+
+export const SubscriptionSchema = SchemaFactory.createForClass(Subscription);
