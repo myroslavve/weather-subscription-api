@@ -20,6 +20,9 @@ export class Subscription {
 
   @Prop()
   token: string;
+
+  @Prop({ default: 0 })
+  migrationVersion: number;
 }
 
 export const SubscriptionSchema = SchemaFactory.createForClass(Subscription);
