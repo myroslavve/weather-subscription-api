@@ -13,7 +13,7 @@ export class EmailService {
     this.appUrl = `${this.config.get<string>('HOST')}:${this.config.get<string>('PORT')}`;
   }
 
-  async sendConfirmationEmail(email: string, token: string) {
+  async sendConfirmationEmail(email: string, city: string, token: string) {
     const url = `${this.appUrl}/api/confirm/${token}`;
     await this.mailer.sendMail({
       to: email,
@@ -21,6 +21,7 @@ export class EmailService {
       template: './confirmation',
       context: {
         url,
+        city,
       },
     });
   }

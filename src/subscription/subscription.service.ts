@@ -43,7 +43,11 @@ export class SubscriptionService {
       token,
     }).save();
 
-    await this.emailService.sendConfirmationEmail(subscription.email, token);
+    await this.emailService.sendConfirmationEmail(
+      subscription.email,
+      subscription.city,
+      token,
+    );
     return newSubscription;
   }
 
