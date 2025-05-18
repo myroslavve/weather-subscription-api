@@ -97,7 +97,7 @@
             .catch((error) => {
               console.error('Error:', error);
               if (err.code === 409) {
-                alert('This email was already subscribed');
+                alert('This email was already subscribed for this city');
               } else {
                 alert(
                   'There was a problem with your subscription. Please try again.',
