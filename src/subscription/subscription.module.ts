@@ -1,5 +1,7 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { EmailModule } from 'src/email/email.module';
+import { SchedulerModule } from 'src/scheduler/scheduler.module';
 import { Subscription, SubscriptionSchema } from './schema/subscription.schema';
 import { SubscriptionController } from './subscription.controller';
 import { SubscriptionService } from './subscription.service';
@@ -9,6 +11,8 @@ import { SubscriptionService } from './subscription.service';
     MongooseModule.forFeature([
       { name: Subscription.name, schema: SubscriptionSchema },
     ]),
+    SchedulerModule,
+    EmailModule,
   ],
   controllers: [SubscriptionController],
   providers: [SubscriptionService],

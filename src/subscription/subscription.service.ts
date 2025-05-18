@@ -6,6 +6,8 @@ import {
 import { InjectModel } from '@nestjs/mongoose';
 import * as crypto from 'crypto';
 import { Model } from 'mongoose';
+import { EmailService } from 'src/email/email.service';
+import { SchedulerService } from 'src/scheduler/scheduler.service';
 import {
   Subscription,
   SubscriptionDocument,
@@ -17,6 +19,8 @@ export class SubscriptionService {
   constructor(
     @InjectModel(Subscription.name)
     private subscriptionModel: Model<SubscriptionDocument>,
+    private schedulerService: SchedulerService,
+    private emailService: EmailService,
   ) {}
 
   async createSubscription(subscription: CreateSubscriptionDto) {
@@ -29,9 +33,10 @@ export class SubscriptionService {
     const newSubscription = new this.subscriptionModel({
       ...subscription,
       token,
-    });
+    }).save();
 
-    return newSubscription.save();
+    await this.emailService.sendConfirmationEmail(subscription.email, token);
+    return newSubscription;
   }
 
   async confirm(token: string) {
@@ -40,12 +45,18 @@ export class SubscriptionService {
     if (subscription.confirmed)
       throw new ConflictException('Already confirmed');
     subscription.confirmed = true;
-    return subscription.save();
+    const saved = await subscription.save();
+
+    this.schedulerService.scheduleSubscription(saved);
+    return saved;
   }
 
   async unsubscribe(token: string) {
     const subscription = await this.subscriptionModel.findOne({ token });
     if (!subscription) throw new NotFoundException('Token not found');
+
+    this.schedulerService.removeSubscription(subscription);
+
     return this.subscriptionModel.findByIdAndDelete(subscription._id);
   }
 

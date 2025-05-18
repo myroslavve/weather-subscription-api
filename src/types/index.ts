@@ -4,6 +4,11 @@ export type Weather = {
   description: string;
 };
 
+export enum SubscriptionFrequency {
+  HOURLY = 'hourly',
+  DAILY = 'daily',
+}
+
 // Weather API
 export type WeatherApiResponse = {
   current: {
