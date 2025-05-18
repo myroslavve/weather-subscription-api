@@ -1,4 +1,5 @@
 import {
+  BadRequestException,
   ConflictException,
   Injectable,
   NotFoundException,
@@ -8,6 +9,7 @@ import * as crypto from 'crypto';
 import { Model } from 'mongoose';
 import { EmailService } from 'src/email/email.service';
 import { SchedulerService } from 'src/scheduler/scheduler.service';
+import { WeatherService } from 'src/weather/weather.service';
 import {
   Subscription,
   SubscriptionDocument,
@@ -21,6 +23,7 @@ export class SubscriptionService {
     private subscriptionModel: Model<SubscriptionDocument>,
     private schedulerService: SchedulerService,
     private emailService: EmailService,
+    private weatherService: WeatherService,
   ) {}
 
   async createSubscription(subscription: CreateSubscriptionDto) {
@@ -29,6 +32,11 @@ export class SubscriptionService {
       token,
     });
     if (exists) throw new ConflictException('Email already subscribed');
+
+    const isCityValid = await this.weatherService.isCityValid(
+      subscription.city,
+    );
+    if (!isCityValid) throw new BadRequestException('Invalid city');
 
     const newSubscription = new this.subscriptionModel({
       ...subscription,

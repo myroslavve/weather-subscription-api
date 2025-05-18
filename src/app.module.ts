@@ -1,13 +1,15 @@
 import { Module } from '@nestjs/common';
 import { ConfigModule, ConfigService } from '@nestjs/config';
 import { MongooseModule } from '@nestjs/mongoose';
+import { ServeStaticModule } from '@nestjs/serve-static';
+import { join } from 'path';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
-import { WeatherModule } from './weather/weather.module';
-import { SubscriptionModule } from './subscription/subscription.module';
 import { DatabaseModule } from './database/database.module';
 import { EmailModule } from './email/email.module';
 import { SchedulerModule } from './scheduler/scheduler.module';
+import { SubscriptionModule } from './subscription/subscription.module';
+import { WeatherModule } from './weather/weather.module';
 
 @Module({
   imports: [
@@ -20,6 +22,9 @@ import { SchedulerModule } from './scheduler/scheduler.module';
         uri: configService.get<string>('MONGO_URI'),
       }),
       inject: [ConfigService],
+    }),
+    ServeStaticModule.forRoot({
+      rootPath: join(__dirname, '..', 'public'),
     }),
     WeatherModule,
     SubscriptionModule,

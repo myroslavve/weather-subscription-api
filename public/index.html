@@ -1,0 +1,110 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Weather Subscription</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        max-width: 600px;
+        margin: 0 auto;
+        padding: 20px;
+      }
+      .form-group {
+        margin-bottom: 15px;
+      }
+      label {
+        display: block;
+        margin-bottom: 5px;
+        font-weight: bold;
+      }
+      input,
+      select {
+        width: 100%;
+        padding: 8px;
+        border: 1px solid #ddd;
+        border-radius: 4px;
+        box-sizing: border-box;
+      }
+      button {
+        background-color: #4caf50;
+        color: white;
+        padding: 10px 15px;
+        border: none;
+        border-radius: 4px;
+        cursor: pointer;
+      }
+      button:hover {
+        background-color: #45a049;
+      }
+    </style>
+  </head>
+  <body>
+    <h1>Weather Subscription</h1>
+    <p>Subscribe to receive weather updates for your city.</p>
+
+    <form id="subscriptionForm" action="/api/subscribe" method="POST">
+      <div class="form-group">
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required />
+      </div>
+
+      <div class="form-group">
+        <label for="city">City:</label>
+        <input type="text" id="city" name="city" required />
+      </div>
+
+      <div class="form-group">
+        <label for="frequency">Update Frequency:</label>
+        <select id="frequency" name="frequency" required>
+          <option value="hourly">Hourly</option>
+          <option value="daily">Daily</option>
+        </select>
+      </div>
+
+      <button type="submit">Subscribe</button>
+    </form>
+
+    <script>
+      document
+        .getElementById('subscriptionForm')
+        .addEventListener('submit', function (e) {
+          e.preventDefault();
+
+          const formData = new FormData(this);
+          const jsonData = {};
+          formData.forEach((value, key) => {
+            jsonData[key] = value;
+          });
+
+          fetch('/api/subscribe', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify(jsonData),
+          })
+            .then((response) => {
+              if (response.ok) {
+                window.location.href = '/confirmation.html';
+              } else {
+                return response.json().then((err) => {
+                  throw err;
+                });
+              }
+            })
+            .catch((error) => {
+              console.error('Error:', error);
+              if (err.code === 409) {
+                alert('This email was already subscribed');
+              } else {
+                alert(
+                  'There was a problem with your subscription. Please try again.',
+                );
+              }
+            });
+        });
+    </script>
+  </body>
+</html>

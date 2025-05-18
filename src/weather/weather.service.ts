@@ -30,4 +30,16 @@ export class WeatherService {
       description: data.current.condition.text,
     };
   }
+
+  async isCityValid(city: string): Promise<boolean> {
+    try {
+      await this.getWeather(city);
+      return true;
+    } catch (error) {
+      if (error instanceof NotFoundException) {
+        return false;
+      }
+      throw error;
+    }
+  }
 }
