@@ -1,5 +1,5 @@
 import { Controller, Get, Query } from '@nestjs/common';
-import { GetWeatherDto } from './weather.dto';
+import { GetWeatherDto } from './types/weather.dto';
 import { WeatherService } from './weather.service';
 
 @Controller('weather')
