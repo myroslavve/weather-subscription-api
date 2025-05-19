@@ -44,7 +44,6 @@ export class EmailService {
         temperature,
         humidity,
         description,
-        timestamp: new Date().toLocaleString(),
         unsubscribeUrl,
       },
     });
