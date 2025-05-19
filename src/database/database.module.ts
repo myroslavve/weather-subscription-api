@@ -11,9 +11,14 @@ import { DatabaseMigrationService } from './database-migration.service';
   imports: [
     MongooseModule.forRootAsync({
       imports: [ConfigModule],
-      useFactory: (configService: ConfigService) => ({
-        uri: configService.get<string>('MONGO_URI'),
-      }),
+      useFactory: (configService: ConfigService) => {
+        const isTestEnvironment = process.env.NODE_ENV === 'test';
+        const uri = isTestEnvironment
+          ? configService.get<string>('MONGO_URI_TEST')
+          : configService.get<string>('MONGO_URI');
+
+        return { uri };
+      },
       inject: [ConfigService],
     }),
     MongooseModule.forFeature([
